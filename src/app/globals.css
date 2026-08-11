@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+@theme {
+  /* Surface — near-black supaya warna neon-nya nendang */
+  --color-ink: #08080a;
+  --color-surface: #101014;
+  --color-surface-2: #17171d;
+  --color-line: rgba(255, 255, 255, 0.09);
+  --color-line-strong: rgba(255, 255, 255, 0.18);
+
+  /* Teks */
+  --color-cream: #f5f5f7;
+  --color-muted: #a2a2ae;
+
+  /* Aksen */
+  --color-acid: #c8ff00;
+  --color-violet: #7c5cff;
+  --color-pink: #ff3d9a;
+  --color-cyan: #00e0c6;
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.75rem;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* nav sticky ~72px + napas */
+  scroll-padding-top: 6.5rem;
+  background: var(--color-ink);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-acid);
+  color: #000;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-acid);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Angka harga selalu rata, tidak goyang saat filter berubah */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ---------- Tekstur latar ---------- */
+
+.noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.grid-lines {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+
+.glass {
+  background: color-mix(in oklab, var(--color-surface) 95%, transparent);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+/* ---------- Efek teks ---------- */
+
+/* Garis luar saja bikin teksnya hilang, jadi diberi isian tipis + garis
+   yang lebih tegas — tetap terbaca sekunder, tapi tetap terbaca. */
+.outline-type {
+  color: rgba(255, 255, 255, 0.09);
+  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.5);
+}
+
+.acid-glow {
+  text-shadow: 0 0 32px color-mix(in oklab, var(--color-acid) 45%, transparent);
+}
+
+/* ---------- Animasi ---------- */
+
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  animation: marquee-x var(--marquee-duration, 40s) linear infinite;
+  animation-direction: var(--marquee-direction, normal);
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(4%, -6%, 0) scale(1.08);
+  }
+  66% {
+    transform: translate3d(-5%, 4%, 0) scale(0.95);
+  }
+}
+
+.blob {
+  animation: drift var(--drift-duration, 22s) ease-in-out infinite;
+  animation-delay: var(--drift-delay, 0s);
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.card-in {
+  animation: card-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Kartu aplikasi: border & glow ikut warna brand-nya saat hover */
+.accent-card {
+  transition:
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    transform 300ms ease;
+}
+
+.accent-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklab, var(--card-accent) 45%, transparent);
+  box-shadow: 0 20px 60px -30px var(--card-accent);
+}
+
+@keyframes sweep {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.sweep {
+  background-size: 200% 100%;
+  animation: sweep 6s linear infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-acid) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 14px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee-track,
+  .blob,
+  .sweep,
+  .pulse-ring,
+  .card-in {
+    animation: none !important;
+  }
+
+  .accent-card:hover {
+    transform: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

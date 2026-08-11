@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect width="120" height="120" rx="26" fill="#c8ff00" />
+  <g fill="#08080a">
+    <rect x="18" y="16" width="84" height="11" />
+    <rect x="18" y="93" width="84" height="11" />
+    <path
+      d="M26 86 V56 A22 22 0 0 1 48 34 H102"
+      fill="none"
+      stroke="#08080a"
+      stroke-width="14"
+    />
+    <path
+      d="M72 48a20 20 0 1 0 0 40 20 20 0 0 0 0-40Zm0 13.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13Z"
+      fill-rule="evenodd"
+    />
+  </g>
+</svg>
