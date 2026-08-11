@@ -1,0 +1,39 @@
+# Gerbang mutu: lint, cek tipe, dan build.
+#
+# Kenapa ini ada: workflow "Keamanan" hanya memeriksa kerentanan, dan build
+# preview Vercel tidak menjalankan ESLint. Waktu PR Dependabot menaikkan ESLint
+# ke v10 dan TypeScript ke v7 (11 Agu 2026), semua centang hijau — padahal
+# `npm run lint` sudah mati total. Job ini menutup celah itu.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mutu:
+    name: Lint, tipe, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Dijalankan terpisah (bukan '&&') supaya jelas mana yang gagal.
+      - name: Lint
+        run: npx eslint .
+
+      - name: Cek tipe
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build

@@ -22,6 +22,22 @@ updates:
         dependency-type: "production"
       dependensi-pengembangan:
         dependency-type: "development"
+    # Dua paket ini SENGAJA ditahan. Keduanya pernah digabung (11 Agu 2026) dan
+    # mematikan `npm run lint` — build & tsc tetap lolos, jadi kerusakannya
+    # tidak kelihatan sampai lint dijalankan manual.
+    ignore:
+      # ESLint 10 menghapus API context.getFilename(), sementara
+      # eslint-plugin-react bawaan eslint-config-next@16 masih memakainya:
+      # "TypeError: contextOrFilename.getFilename is not a function".
+      # Buka lagi kalau eslint-config-next sudah menyatakan dukungan ESLint 10.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      # typescript-eslint menuntut peer `typescript >=4.8.4 <6.1.0`; TS 7 ditolak
+      # mentah-mentah ("typescript-eslint does not support TS 7.0").
+      # Pantau https://github.com/typescript-eslint/typescript-eslint/issues/10940
+      - dependency-name: "typescript"
+        update-types:
+          ["version-update:semver-major", "version-update:semver-minor"]
 
   # Versi action di dalam workflow .github/workflows/*
   - package-ecosystem: "github-actions"
