@@ -79,6 +79,18 @@ adminPhoneDisplay: "+62 813-8840-266",
 
 Semua tombol order, tombol reseller, dan FAB otomatis ikut.
 
+## Memeriksa sebelum push
+
+```bash
+npm run lint
+npm run build
+```
+
+`npm run build` sekaligus memeriksa tipe. Jangan pakai `npx tsc --noEmit`
+sendirian di checkout yang bersih — tipe global seperti `LayoutProps` baru
+dihasilkan Next saat build (lewat `next-env.d.ts` yang di-gitignore), jadi tsc
+akan gagal padahal kodenya benar.
+
 ## Keamanan
 
 | Lapisan | Di mana |

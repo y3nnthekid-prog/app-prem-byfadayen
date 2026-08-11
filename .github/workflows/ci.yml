@@ -32,8 +32,10 @@ jobs:
       - name: Lint
         run: npx eslint .
 
-      - name: Cek tipe
-        run: npx tsc --noEmit
-
-      - name: Build
+      # `next build` sekaligus memeriksa tipe, jadi tidak ada langkah tsc
+      # terpisah. Sempat ada, tapi selalu gagal di checkout bersih: tipe global
+      # seperti `LayoutProps` baru dihasilkan Next saat build dan disambungkan
+      # lewat next-env.d.ts yang di-gitignore. Menjalankan tsc lebih dulu
+      # berarti memeriksa proyek sebelum tipenya ada.
+      - name: Build (termasuk cek tipe)
         run: npm run build
