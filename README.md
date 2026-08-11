@@ -79,9 +79,47 @@ adminPhoneDisplay: "+62 813-8840-266",
 
 Semua tombol order, tombol reseller, dan FAB otomatis ikut.
 
+## Keamanan
+
+| Lapisan | Di mana |
+| --- | --- |
+| CSP berbasis nonce | `src/proxy.ts` |
+| HSTS, nosniff, X-Frame-Options, Referrer-Policy, Permissions-Policy | `next.config.ts` |
+| npm audit, CodeQL, Gitleaks, dependency-review | `.github/workflows/security.yml` |
+| ZAP Baseline mingguan ke situs live | `.github/workflows/zap.yml` |
+| Pemutakhiran dependensi otomatis | `.github/dependabot.yml` |
+
+Di sisi GitHub juga aktif: secret scanning + push protection, Dependabot
+alerts + automated security fixes, dan ruleset "Lindungi main" yang memblokir
+force-push dan penghapusan cabang.
+
+### Kenapa halaman utama dinamis
+
+`src/app/page.tsx` memanggil `await connection()`. Ini **bukan** hiasan.
+
+Nonce hanya bisa disuntikkan Next saat render per-permintaan. Tanpa
+`connection()` halaman di-prerender saat build, HTML-nya lahir tanpa atribut
+`nonce`, lalu CSP memblokir skrip bootstrap Next dan hidrasi gagal dengan
+React error #412 — situs tampil tapi mati total, tanpa pesan galat yang jelas.
+
+Jadi kalau kamu menghapus baris itu, atau memindahkan `page.tsx` ke rute yang
+statis, **uji dulu dengan `npm run build && npm start`** lalu buka konsol
+browser. Cek cepatnya: setiap `<script>` inline di HTML harus punya `nonce=`
+yang sama dengan nonce di header `Content-Security-Policy`.
+
+Biaya render dinamis di sini kecil — tidak ada pengambilan data sama sekali,
+dan hasilnya tetap dilayani cepat dari edge Vercel.
+
 ## Deploy
 
-Push ke GitHub lalu import di Vercel — nggak ada env var yang wajib diisi.
+Repo sudah tersambung ke Vercel, jadi **push ke `main` otomatis deploy ke
+produksi**. Nggak ada env var yang wajib diisi.
+
+Kalau perlu rilis manual dari folder ini:
+
+```bash
+npx vercel deploy --prod --yes
+```
 
 Kalau pakai domain sendiri (atau hosting selain Vercel), set `NEXT_PUBLIC_SITE_URL`
 biar preview link (OG image) nunjuk ke domain yang benar. Lihat `.env.example`.
